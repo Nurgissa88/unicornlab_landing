@@ -1,65 +1,161 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { Link } from "next-view-transitions"
+import { motion } from "motion/react"
+
+import Hero from "@/components/hero/Hero"
+import Footer from "@/components/layout/Footer"
+import Header from "@/components/layout/Header"
+import Section from "@/components/ui/Section"
+import { siteConfig } from "@/content/site"
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <Header />
+
+      <main>
+        <Hero />
+
+        <Section id="catalog" className="pt-0">
+          <motion.div
+            className="mb-8 flex items-end justify-between gap-6"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">
+                Каталог
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                Основные направления
+              </h2>
+            </div>
+          </motion.div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {siteConfig.categoryPreview.map((category, index) => (
+              <motion.div
+                key={category.slug}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.42,
+                  delay: index * 0.07,
+                  ease: "easeOut",
+                }}
+              >
+                <Link
+                  href={`/catalog/${category.slug}`}
+                  className="surface-card surface-card-hover block p-7"
+                >
+                  <h3 className="text-2xl font-semibold tracking-[-0.02em]">
+                    {category.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm leading-6 muted-text">
+                    {category.description}
+                  </p>
+
+                  <div className="mt-8 flex items-center justify-between">
+                    <span className="text-sm font-medium text-[var(--primary)]">
+                      Перейти в каталог
+                    </span>
+                    <span className="text-lg text-[var(--primary)]">→</span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="about" className="pt-0">
+          <motion.div
+            className="section-panel px-8 py-8 md:px-10 md:py-10"
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.48, ease: "easeOut" }}
           >
-            Documentation
-          </a>
-        </div>
+            <div className="max-w-2xl">
+              <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">
+                Почему с нами удобно
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                Структурированный каталог и единый запрос на КП
+              </h2>
+            </div>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              {siteConfig.benefits.map((benefit, index) => (
+                <motion.div
+                  key={benefit.title}
+                  className="surface-card p-6"
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.06,
+                    ease: "easeOut",
+                  }}
+                >
+                  <h3 className="text-lg font-semibold tracking-[-0.02em]">
+                    {benefit.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 muted-text">
+                    {benefit.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </Section>
+
+        <Section id="rfq" className="pt-0">
+          <motion.div
+            className="section-panel px-8 py-8 md:px-10 md:py-10"
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.48, ease: "easeOut" }}
+          >
+            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="max-w-2xl">
+                <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">
+                  Запрос КП
+                </p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  {siteConfig.cta.title}
+                </h2>
+                <p className="mt-4 text-base leading-7 muted-text">
+                  {siteConfig.cta.description}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                <Link
+                  href={siteConfig.cta.primary.href}
+                  className="ui-button ui-button-primary"
+                >
+                  {siteConfig.cta.primary.label}
+                </Link>
+                <Link
+                  href={siteConfig.cta.secondary.href}
+                  className="ui-button ui-button-secondary"
+                >
+                  {siteConfig.cta.secondary.label}
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </Section>
       </main>
-    </div>
-  );
+
+      <Footer />
+    </>
+  )
 }
