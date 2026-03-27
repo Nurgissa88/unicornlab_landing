@@ -162,12 +162,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : null}
         </div>
 
-        <div className="mt-5 flex items-center gap-2">
-          <AddToQuoteButton product={product} className="flex-1 min-h-11" />
+        <div className="mt-5 flex items-stretch gap-2">
+          <AddToQuoteButton product={product} className="flex-1" />
 
           <Link
             href={`/catalog/${product.category}/${product.slug}`}
-            className="ui-button ui-button-secondary min-h-11 px-4"
+            className="ui-button ui-button-secondary min-h-11 shrink-0 px-4"
           >
             Подробнее
           </Link>

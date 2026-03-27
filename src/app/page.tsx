@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer"
 import Header from "@/components/layout/Header"
 import Section from "@/components/ui/Section"
 import { siteConfig } from "@/content/site"
+import CatalogFlowSection from "@/components/home/CatalogFlowSection"
 
 export default function HomePage() {
   return (
@@ -16,7 +17,7 @@ export default function HomePage() {
 
       <main>
         <Hero />
-
+<div className="xl:hidden">
         <Section id="catalog" className="pt-0">
           <motion.div
             className="mb-8 flex items-end justify-between gap-6"
@@ -72,6 +73,7 @@ export default function HomePage() {
           </div>
         </Section>
 
+
         <Section id="about" className="pt-0">
           <motion.div
             className="section-panel px-8 py-8 md:px-10 md:py-10"
@@ -114,6 +116,11 @@ export default function HomePage() {
             </div>
           </motion.div>
         </Section>
+</div>
+
+<div className="hidden xl:block">
+  <CatalogFlowSection />
+</div>
 
         <Section id="rfq" className="pt-0">
           <motion.div
