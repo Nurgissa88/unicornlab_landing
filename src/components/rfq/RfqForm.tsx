@@ -52,13 +52,16 @@ export default function RfqForm() {
     }
 
     try {
-      const response = await fetch("/api/rfq", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_RFQ_API_URL ?? "/api/rfq",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      )
 
       if (!response.ok) {
         throw new Error("Не удалось отправить запрос")

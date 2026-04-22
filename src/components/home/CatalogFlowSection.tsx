@@ -19,7 +19,7 @@ function TopCategoryCard({
   return (
     <Link
       href={href}
-      className="group relative block rounded-[28px] border border-[var(--border)] bg-white/90 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.04)] transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.07)]"
+      className="group relative block rounded-[16px] border border-[var(--border)] bg-white/90 p-6 shadow-[0_10px_30px_rgba(6,12,26,0.04)] transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(6,12,26,0.07)]"
     >
       <div className="flex min-h-[180px] flex-col">
         <h3 className="text-[clamp(1.75rem,2.2vw,2.3rem)] font-semibold tracking-[-0.03em] text-[var(--foreground)]">
@@ -47,7 +47,7 @@ function BenefitCard({
   description: string
 }) {
   return (
-    <div className="rounded-[28px] border border-[var(--border)] bg-white/88 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.035)]">
+    <div className="rounded-[16px] border border-[var(--border)] bg-white/88 p-6 shadow-[0_10px_30px_rgba(6,12,26,0.035)]">
       <h3 className="text-[clamp(1.45rem,1.6vw,2rem)] font-semibold tracking-[-0.03em] text-[var(--foreground)]">
         {title}
       </h3>
@@ -119,9 +119,9 @@ function FlowSvg({
             y2="520"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="rgba(56,189,248,0.16)" />
-            <stop offset="50%" stopColor="rgba(15,118,110,0.18)" />
-            <stop offset="100%" stopColor="rgba(56,189,248,0.14)" />
+            <stop offset="0%" stopColor="rgba(31,111,183,0.16)" />
+            <stop offset="50%" stopColor="rgba(18,58,99,0.18)" />
+            <stop offset="100%" stopColor="rgba(31,111,183,0.14)" />
           </linearGradient>
 
           <linearGradient
@@ -132,11 +132,11 @@ function FlowSvg({
             y2="520"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="rgba(125,211,252,0)" />
-            <stop offset="30%" stopColor="rgba(125,211,252,0.92)" />
-            <stop offset="50%" stopColor="rgba(110,231,183,0.95)" />
-            <stop offset="70%" stopColor="rgba(125,211,252,0.92)" />
-            <stop offset="100%" stopColor="rgba(125,211,252,0)" />
+            <stop offset="0%" stopColor="rgba(31,111,183,0)" />
+            <stop offset="30%" stopColor="rgba(31,111,183,0.92)" />
+            <stop offset="50%" stopColor="rgba(18,58,99,0.95)" />
+            <stop offset="70%" stopColor="rgba(31,111,183,0.92)" />
+            <stop offset="100%" stopColor="rgba(31,111,183,0)" />
           </linearGradient>
 
           <linearGradient
@@ -147,10 +147,10 @@ function FlowSvg({
             y2="520"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="rgba(186,230,253,0.88)" />
-            <stop offset="40%" stopColor="rgba(125,211,252,1)" />
-            <stop offset="60%" stopColor="rgba(110,231,183,1)" />
-            <stop offset="100%" stopColor="rgba(110,231,183,0.92)" />
+            <stop offset="0%" stopColor="rgba(237,245,255,0.88)" />
+            <stop offset="40%" stopColor="rgba(31,111,183,1)" />
+            <stop offset="60%" stopColor="rgba(18,58,99,1)" />
+            <stop offset="100%" stopColor="rgba(9,25,46,0.92)" />
           </linearGradient>
 
           <filter id="flowGlow" x="-30%" y="-30%" width="160%" height="160%">
@@ -265,29 +265,29 @@ function FlowSvg({
 export default function CatalogFlowSection() {
   const sectionRef = useRef<HTMLDivElement | null>(null)
   const { scrollYProgress } = useScroll({
-  target: sectionRef,
-  offset: ["start 85%", "end 20%"],
-})
+    target: sectionRef,
+    offset: ["start 85%", "end 20%"],
+  })
 
-const centerGlowScale = useTransform(scrollYProgress, [0, 0.42], [0, 1])
-const centerGlowOpacity = useTransform(
-  scrollYProgress,
-  [0, 0.06, 0.18, 0.42],
-  [0, 0.35, 1, 1]
-)
+  const centerGlowScale = useTransform(scrollYProgress, [0, 0.42], [0, 1])
+  const centerGlowOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.06, 0.18, 0.42],
+    [0, 0.35, 1, 1]
+  )
 
   const topCards = [
     {
       title: "Оборудование",
       description:
         "Аналитические приборы, лабораторные системы и вспомогательное оснащение.",
-      href: "/catalog/equipment",
+      href: "/catalog/instruments",
     },
     {
-      title: "Реагенты",
+      title: "Запчасти",
       description:
-        "Наборы, буферы, химические и биологические реагенты для лабораторных задач.",
-      href: "/catalog/reagents",
+        "Модули, узлы, датчики и сменные комплектующие для сервисного обслуживания лабораторного оборудования.",
+      href: "/catalog/spare-parts",
     },
     {
       title: "Расходные материалы",
@@ -298,12 +298,15 @@ const centerGlowOpacity = useTransform(
   ]
 
   return (
-    <Section id="about" className="pt-0">
+    <Section className="pt-0 scroll-mt-28">
       <div className="section-panel relative overflow-hidden px-6 py-8 md:px-8 md:py-10 xl:px-10">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.05),transparent_35%),radial-gradient(circle_at_bottom,rgba(15,118,110,0.05),transparent_35%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(31,111,183,0.07),transparent_35%),radial-gradient(circle_at_bottom,rgba(18,58,99,0.08),transparent_35%)]" />
 
         <div ref={sectionRef} className="relative">
-          <div className="relative z-10 grid gap-6 xl:grid-cols-3">
+          <div
+            id="catalog"
+            className="relative z-10 grid gap-6 xl:grid-cols-3 scroll-mt-28"
+          >
             {topCards.map((card, index) => (
               <motion.div
                 key={card.href}
@@ -322,34 +325,39 @@ const centerGlowOpacity = useTransform(
           </div>
 
           <FlowSvg targetRef={sectionRef} />
-<div className="pointer-events-none absolute left-1/2 top-[252px] z-[5] hidden -translate-x-1/2 xl:block">
-  <div className="relative h-[118px] w-[14px]">
-    <div className="absolute inset-x-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-[rgba(15,118,110,0.18)]" />
 
-    <motion.div
-      className="absolute inset-x-1/2 top-0 h-[54px] w-[8px] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(186,230,253,0.0)_0%,rgba(125,211,252,0.95)_35%,rgba(110,231,183,0.95)_100%)] blur-[6px]"
-      animate={{
-        y: [-54, 118],
-        opacity: [0, 1, 0],
-      }}
-      transition={{
-        duration: 2.2,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-    />
+          <div className="pointer-events-none absolute left-1/2 top-[252px] z-[5] hidden -translate-x-1/2 xl:block">
+            <div className="relative h-[118px] w-[14px]">
+              <div className="absolute inset-x-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-[rgba(18,58,99,0.24)]" />
 
-<motion.div
-  className="absolute inset-x-1/2 top-0 h-full w-[12px] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(186,230,253,1)_0%,rgba(125,211,252,1)_42%,rgba(110,231,183,1)_100%)] blur-[2px]"
-  style={{
-    scaleY: centerGlowScale,
-    opacity: centerGlowOpacity,
-    originY: 0,
-  }}
-/>
-  </div>
-</div>
-          <div className="relative z-10 mt-[28px] xl:mt-[40px]">
+              <motion.div
+                className="absolute inset-x-1/2 top-0 h-[54px] w-[8px] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(237,245,255,0.0)_0%,rgba(31,111,183,0.95)_35%,rgba(18,58,99,0.95)_100%)] blur-[6px]"
+                animate={{
+                  y: [-54, 118],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+
+              <motion.div
+                className="absolute inset-x-1/2 top-0 h-full w-[12px] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(237,245,255,1)_0%,rgba(31,111,183,1)_42%,rgba(18,58,99,1)_100%)] blur-[2px]"
+                style={{
+                  scaleY: centerGlowScale,
+                  opacity: centerGlowOpacity,
+                  originY: 0,
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            id="about"
+            className="relative z-10 mt-[28px] xl:mt-[40px] scroll-mt-28"
+          >
             <motion.div
               className="mx-auto w-full max-w-[320px]"
               initial={{ opacity: 0, y: 14, scale: 0.985 }}
@@ -357,7 +365,7 @@ const centerGlowOpacity = useTransform(
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.45, ease: "easeOut" }}
             >
-              <div className="rounded-[24px] border border-[var(--border)] bg-white/92 px-7 py-5 text-center shadow-[0_18px_40px_rgba(15,23,42,0.05)]">
+              <div className="rounded-[14px] border border-[var(--border)] bg-white/92 px-7 py-5 text-center shadow-[0_18px_40px_rgba(6,12,26,0.05)]">
                 <p className="text-[10px] font-medium uppercase tracking-[0.08em] muted-text">
                   Почему с нами удобно
                 </p>

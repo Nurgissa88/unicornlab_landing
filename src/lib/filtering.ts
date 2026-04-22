@@ -1,8 +1,10 @@
-import type { Product } from "@/lib/types"
+import type { Product, ProductComponentType, ProductRole } from "@/lib/types"
 
 export interface ProductFilters {
   query: string
   brands: string[]
+  roles: ProductRole[]
+  componentTypes: ProductComponentType[]
   featuredOnly: boolean
   documentsOnly: boolean
 }
@@ -40,6 +42,18 @@ export function getAvailableBrands(products: Product[]) {
   )
 }
 
+export function getAvailableRoles(products: Product[]) {
+  return [...new Set(products.flatMap((product) => product.roles))].sort((a, b) =>
+    a.localeCompare(b, "ru")
+  )
+}
+
+export function getAvailableComponentTypes(products: Product[]) {
+  return [
+    ...new Set(products.flatMap((product) => product.componentTypes)),
+  ].sort((a, b) => a.localeCompare(b, "ru"))
+}
+
 export function filterProducts(
   products: Product[],
   filters: ProductFilters
@@ -52,6 +66,22 @@ export function filterProducts(
     if (
       filters.brands.length > 0 &&
       !filters.brands.includes(product.brand)
+    ) {
+      return false
+    }
+
+    if (
+      filters.roles.length > 0 &&
+      !filters.roles.some((role) => product.roles.includes(role))
+    ) {
+      return false
+    }
+
+    if (
+      filters.componentTypes.length > 0 &&
+      !filters.componentTypes.some((type) =>
+        product.componentTypes.includes(type)
+      )
     ) {
       return false
     }

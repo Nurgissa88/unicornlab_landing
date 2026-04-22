@@ -18,7 +18,7 @@ export default function HomePage() {
       <main>
         <Hero />
 <div className="xl:hidden">
-        <Section id="catalog" className="pt-0">
+        <Section className="pt-0">
           <motion.div
             className="mb-8 flex items-end justify-between gap-6"
             initial={{ opacity: 0, y: 18 }}
@@ -74,7 +74,7 @@ export default function HomePage() {
         </Section>
 
 
-        <Section id="about" className="pt-0">
+        <Section className="pt-0">
           <motion.div
             className="section-panel px-8 py-8 md:px-10 md:py-10"
             initial={{ opacity: 0, y: 22 }}

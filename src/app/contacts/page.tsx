@@ -21,7 +21,7 @@ export default function ContactsPage() {
 
             <p className="mt-4 max-w-2xl text-base leading-7 muted-text">
               Напишите нам или отправьте запрос на коммерческое предложение
-              через каталог. Мы поможем с подбором оборудования, реагентов и
+              через каталог. Мы поможем с подбором оборудования, запчастей и
               расходных материалов под ваши задачи.
             </p>
           </div>
@@ -73,7 +73,7 @@ export default function ContactsPage() {
 
             <div className="surface-card p-6 md:p-8">
               <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">
-                Как с нами работать
+                Как оформить заказ
               </p>
 
               <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -116,7 +116,7 @@ export default function ContactsPage() {
 
               <div className="mt-6 rounded-[var(--radius-md)] border border-[var(--border)] bg-white p-5">
                 <p className="text-sm muted-text">
-                  Основной способ работы с сайтом — через каталог и панель
+                  Основной способ заказов — через каталог и панель
                   запроса коммерческого предложения. Для общих вопросов вы
                   также можете связаться с нами напрямую по email или телефону.
                 </p>

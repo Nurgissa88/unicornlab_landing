@@ -21,9 +21,14 @@ export default function Header() {
         <div className="flex min-h-20 items-center justify-between gap-6">
           <Link
             href="/"
-            className="shrink-0 text-lg font-semibold tracking-[-0.02em]"
+            className="shrink-0"
+            aria-label="На главную"
           >
-            {siteConfig.shortName}
+            <img
+              src="/Logo_Black.png"
+              alt="InSeek"
+              className="h-8 w-auto object-contain"
+            />
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">

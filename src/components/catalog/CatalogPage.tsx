@@ -9,12 +9,20 @@ import { categories } from "@/content/categories"
 import {
   filterProducts,
   getAvailableBrands,
+  getAvailableComponentTypes,
+  getAvailableRoles,
   type ProductFilters,
 } from "@/lib/filtering"
-import type { Category, Product } from "@/lib/types"
+import type {
+  Category,
+  Product,
+  ProductComponentType,
+  ProductRole,
+} from "@/lib/types"
 
 import Badge from "@/components/ui/Badge"
 import ProductGrid from "@/components/catalog/ProductGrid"
+import { getComponentTypeLabel, getRoleLabel } from "@/lib/utils"
 
 interface CatalogPageProps {
   currentCategory: Category
@@ -24,6 +32,8 @@ interface CatalogPageProps {
 const initialFilters: ProductFilters = {
   query: "",
   brands: [],
+  roles: [],
+  componentTypes: [],
   featuredOnly: false,
   documentsOnly: false,
 }
@@ -39,7 +49,7 @@ function ActiveFilterChip({
     <button
       type="button"
       onClick={onRemove}
-      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--border)] bg-white px-4 text-sm font-medium text-[var(--foreground)] shadow-[0_6px_20px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[var(--primary)]/30 hover:bg-[var(--surface-soft)]"
+      className="inline-flex min-h-10 items-center gap-2 rounded-[10px] border border-[var(--border)] bg-white px-4 text-sm font-medium text-[var(--foreground)] shadow-[0_6px_20px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[var(--primary)]/30 hover:bg-[var(--surface-soft)]"
     >
       <span>{label}</span>
       <span className="text-[var(--primary)]">×</span>
@@ -55,6 +65,14 @@ export default function CatalogPage({
 
   const availableBrands = useMemo(() => {
     return getAvailableBrands(products)
+  }, [products])
+
+  const availableRoles = useMemo(() => {
+    return getAvailableRoles(products)
+  }, [products])
+
+  const availableComponentTypes = useMemo(() => {
+    return getAvailableComponentTypes(products)
   }, [products])
 
   const filteredProducts = useMemo(() => {
@@ -78,9 +96,37 @@ export default function CatalogPage({
     setFilters(initialFilters)
   }
 
+  const handleToggleRole = (role: ProductRole) => {
+    setFilters((prev) => {
+      const alreadySelected = prev.roles.includes(role)
+
+      return {
+        ...prev,
+        roles: alreadySelected
+          ? prev.roles.filter((item) => item !== role)
+          : [...prev.roles, role],
+      }
+    })
+  }
+
+  const handleToggleComponentType = (type: ProductComponentType) => {
+    setFilters((prev) => {
+      const alreadySelected = prev.componentTypes.includes(type)
+
+      return {
+        ...prev,
+        componentTypes: alreadySelected
+          ? prev.componentTypes.filter((item) => item !== type)
+          : [...prev.componentTypes, type],
+      }
+    })
+  }
+
   const hasActiveFilters =
     filters.query.trim().length > 0 ||
     filters.brands.length > 0 ||
+    filters.roles.length > 0 ||
+    filters.componentTypes.length > 0 ||
     filters.featuredOnly ||
     filters.documentsOnly
 
@@ -145,6 +191,22 @@ export default function CatalogPage({
                   />
                 ))}
 
+                {filters.roles.map((role) => (
+                  <ActiveFilterChip
+                    key={role}
+                    label={getRoleLabel(role)}
+                    onRemove={() => handleToggleRole(role)}
+                  />
+                ))}
+
+                {filters.componentTypes.map((componentType) => (
+                  <ActiveFilterChip
+                    key={componentType}
+                    label={getComponentTypeLabel(componentType)}
+                    onRemove={() => handleToggleComponentType(componentType)}
+                  />
+                ))}
+
                 {filters.featuredOnly ? (
                   <ActiveFilterChip
                     label="Рекомендуемые"
@@ -205,10 +267,16 @@ export default function CatalogPage({
           <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
             <FiltersSidebar
               brands={availableBrands}
+              roles={availableRoles}
+              componentTypes={availableComponentTypes}
               selectedBrands={filters.brands}
+              selectedRoles={filters.roles}
+              selectedComponentTypes={filters.componentTypes}
               featuredOnly={filters.featuredOnly}
               documentsOnly={filters.documentsOnly}
               onToggleBrand={handleToggleBrand}
+              onToggleRole={handleToggleRole}
+              onToggleComponentType={handleToggleComponentType}
               onFeaturedChange={(value) =>
                 setFilters((prev) => ({ ...prev, featuredOnly: value }))
               }

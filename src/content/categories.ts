@@ -2,16 +2,16 @@ import type { Category } from "@/lib/types"
 
 export const categories: Category[] = [
   {
-    slug: "equipment",
+    slug: "instruments",
     title: "Оборудование",
     description:
       "Аналитические приборы, лабораторные системы и вспомогательное оснащение.",
   },
   {
-    slug: "reagents",
-    title: "Реагенты",
+    slug: "spare-parts",
+    title: "Запчасти",
     description:
-      "Наборы, буферы, химические и биологические реагенты для лабораторных задач.",
+      "Модули, узлы, датчики и сменные комплектующие для сервисного обслуживания лабораторного оборудования.",
   },
   {
     slug: "consumables",
