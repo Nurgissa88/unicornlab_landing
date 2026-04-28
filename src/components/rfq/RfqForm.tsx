@@ -20,9 +20,14 @@ const rfqSchema = z.object({
 
 type RfqFormData = z.infer<typeof rfqSchema>
 
-export default function RfqForm() {
+interface RfqFormProps {
+  mode?: "cart" | "general"
+}
+
+export default function RfqForm({ mode = "cart" }: RfqFormProps) {
   const items = useCartStore((state) => state.items)
   const clearCart = useCartStore((state) => state.clearCart)
+  const isCartMode = mode === "cart"
 
   const [isSuccess, setIsSuccess] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -48,7 +53,8 @@ export default function RfqForm() {
 
     const payload: RfqPayload = {
       customer: values,
-      items,
+      items: isCartMode ? items : [],
+      source: mode,
     }
 
     try {
@@ -68,7 +74,9 @@ export default function RfqForm() {
       }
 
       reset()
-      clearCart()
+      if (isCartMode) {
+        clearCart()
+      }
       setIsSuccess(true)
     } catch {
       setSubmitError("Не удалось отправить запрос. Попробуйте ещё раз.")
@@ -77,7 +85,13 @@ export default function RfqForm() {
 
   if (isSuccess) {
     return (
-      <div className="surface-card mt-5 p-5">
+      <div
+        className={
+          isCartMode
+            ? "surface-card mt-5 p-5"
+            : "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-soft)] p-5"
+        }
+      >
         <div className="flex items-start gap-3">
           <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--primary)]" />
           <div>
@@ -85,8 +99,9 @@ export default function RfqForm() {
               Запрос успешно отправлен
             </h3>
             <p className="mt-2 text-sm leading-6 muted-text">
-              Мы получили ваши контактные данные и выбранные позиции. Дальше с
-              вами свяжутся по коммерческому предложению.
+              Мы получили ваши контактные данные
+              {isCartMode ? " и выбранные позиции" : ""}. Дальше с вами
+              свяжутся по коммерческому предложению.
             </p>
           </div>
         </div>
@@ -94,7 +109,7 @@ export default function RfqForm() {
     )
   }
 
-  if (items.length === 0) {
+  if (isCartMode && items.length === 0) {
     return (
       <div className="surface-card mt-5 p-5">
         <h3 className="text-base font-semibold">Добавьте позиции в запрос</h3>
@@ -107,11 +122,13 @@ export default function RfqForm() {
   }
 
   return (
-    <div className="mt-5">
+    <div className={isCartMode ? "mt-5" : ""}>
       <div className="mb-4">
         <h3 className="text-base font-semibold">Контактные данные</h3>
         <p className="mt-1 text-sm muted-text">
-          Отправим запрос вместе с выбранными позициями.
+          {isCartMode
+            ? "Отправим запрос вместе с выбранными позициями."
+            : "Опишите задачу, позицию или расходные материалы, которые нужно подобрать."}
         </p>
       </div>
 
@@ -163,7 +180,11 @@ export default function RfqForm() {
         <div>
           <Textarea
             {...register("comment")}
-            placeholder="Комментарий к запросу"
+            placeholder={
+              isCartMode
+                ? "Комментарий к запросу"
+                : "Что нужно подобрать или уточнить"
+            }
           />
           {errors.comment ? (
             <p className="mt-2 text-sm text-red-600">{errors.comment.message}</p>
@@ -179,7 +200,11 @@ export default function RfqForm() {
           disabled={isSubmitting}
           className="w-full disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Отправка..." : "Запросить КП"}
+          {isSubmitting
+            ? "Отправка..."
+            : isCartMode
+              ? "Запросить КП"
+              : "Отправить запрос"}
         </Button>
       </form>
     </div>

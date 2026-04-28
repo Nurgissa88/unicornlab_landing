@@ -213,19 +213,17 @@ export async function POST(request: Request) {
       )
     }
 
-    if (!body.items || body.items.length === 0) {
-      return NextResponse.json(
-        { error: "Cart is empty" },
-        { status: 400, headers: corsHeaders }
-      )
-    }
+    const { customer } = body
+    const items = body.items ?? []
+    const hasItems = items.length > 0
+    const isGeneralRequest = body.source === "general" || !hasItems
 
-    const { customer, items } = body
-
-    const subject = `Новый запрос КП — ${customer.fullName}`
+    const subject = `${isGeneralRequest ? "Новый общий запрос" : "Новый запрос КП"} — ${customer.fullName}`
 
     const text = [
-      "Новый запрос коммерческого предложения",
+      isGeneralRequest
+        ? "Новый общий запрос с сайта"
+        : "Новый запрос коммерческого предложения",
       "",
       `ФИО: ${customer.fullName}`,
       `Компания: ${customer.company || "-"}`,
@@ -233,13 +231,13 @@ export async function POST(request: Request) {
       `Телефон: ${customer.phone || "-"}`,
       `Комментарий: ${customer.comment || "-"}`,
       "",
-      "Позиции:",
-      buildItemsText(items),
+      hasItems ? "Позиции:" : "Позиции: не выбраны",
+      hasItems ? buildItemsText(items) : "",
     ].join("\n")
 
     const html = `
       <div style="font-family:Arial,Helvetica,sans-serif;color:#0f172a;line-height:1.5;">
-        <h2 style="margin:0 0 16px;">Новый запрос коммерческого предложения</h2>
+        <h2 style="margin:0 0 16px;">${isGeneralRequest ? "Новый общий запрос с сайта" : "Новый запрос коммерческого предложения"}</h2>
 
         <div style="margin-bottom:20px;">
           <p><strong>ФИО:</strong> ${escapeHtml(customer.fullName)}</p>
@@ -249,21 +247,27 @@ export async function POST(request: Request) {
           <p><strong>Комментарий:</strong> ${escapeHtml(customer.comment || "-")}</p>
         </div>
 
-        <h3 style="margin:0 0 12px;">Позиции</h3>
+        ${
+          hasItems
+            ? `
+              <h3 style="margin:0 0 12px;">Позиции</h3>
 
-        <table style="border-collapse:collapse;width:100%;font-size:14px;">
-          <thead>
-            <tr>
-              <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Товар</th>
-              <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Артикул</th>
-              <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Категория</th>
-              <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:center;">Кол-во</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${buildItemsHtml(items)}
-          </tbody>
-        </table>
+              <table style="border-collapse:collapse;width:100%;font-size:14px;">
+                <thead>
+                  <tr>
+                    <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Товар</th>
+                    <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Артикул</th>
+                    <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:left;">Категория</th>
+                    <th style="padding:8px 12px;border:1px solid #dbe3ee;text-align:center;">Кол-во</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${buildItemsHtml(items)}
+                </tbody>
+              </table>
+            `
+            : `<p><strong>Позиции:</strong> не выбраны</p>`
+        }
       </div>
     `
 

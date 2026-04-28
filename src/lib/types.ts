@@ -93,4 +93,5 @@ export interface RfqFormValues {
 export interface RfqPayload {
   customer: RfqFormValues
   items: CartItem[]
+  source?: "cart" | "general"
 }

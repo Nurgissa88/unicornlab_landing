@@ -6,6 +6,7 @@ import { motion } from "motion/react"
 import Hero from "@/components/hero/Hero"
 import Footer from "@/components/layout/Footer"
 import Header from "@/components/layout/Header"
+import RfqForm from "@/components/rfq/RfqForm"
 import Section from "@/components/ui/Section"
 import { siteConfig } from "@/content/site"
 import CatalogFlowSection from "@/components/home/CatalogFlowSection"
@@ -130,32 +131,30 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.48, ease: "easeOut" }}
           >
-            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
               <div className="max-w-2xl">
                 <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">
-                  Запрос КП
+                  Обратная связь
                 </p>
                 <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
-                  {siteConfig.cta.title}
+                  Оставьте запрос без выбора позиции в каталоге
                 </h2>
                 <p className="mt-4 text-base leading-7 muted-text">
-                  {siteConfig.cta.description}
+                  Напишите, какое оборудование, запчасть или расходные
+                  материалы нужно подобрать. Мы уточним задачу и подготовим
+                  коммерческое предложение.
                 </p>
+
+                <Link
+                  href="/catalog/instruments"
+                  className="ui-button ui-button-secondary mt-6"
+                >
+                  Перейти в каталог
+                </Link>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Link
-                  href={siteConfig.cta.primary.href}
-                  className="ui-button ui-button-primary"
-                >
-                  {siteConfig.cta.primary.label}
-                </Link>
-                <Link
-                  href={siteConfig.cta.secondary.href}
-                  className="ui-button ui-button-secondary"
-                >
-                  {siteConfig.cta.secondary.label}
-                </Link>
+              <div className="surface-card p-5 md:p-6">
+                <RfqForm mode="general" />
               </div>
             </div>
           </motion.div>
