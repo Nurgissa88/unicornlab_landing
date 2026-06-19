@@ -28,6 +28,7 @@ export default function RfqForm({ mode = "cart" }: RfqFormProps) {
   const items = useCartStore((state) => state.items)
   const clearCart = useCartStore((state) => state.clearCart)
   const isCartMode = mode === "cart"
+  const hasItems = items.length > 0
 
   const [isSuccess, setIsSuccess] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -100,23 +101,11 @@ export default function RfqForm({ mode = "cart" }: RfqFormProps) {
             </h3>
             <p className="mt-2 text-sm leading-6 muted-text">
               Мы получили ваши контактные данные
-              {isCartMode ? " и выбранные позиции" : ""}. Дальше с вами
+              {isCartMode && hasItems ? " и выбранные позиции" : ""}. Дальше с вами
               свяжутся по коммерческому предложению.
             </p>
           </div>
         </div>
-      </div>
-    )
-  }
-
-  if (isCartMode && items.length === 0) {
-    return (
-      <div className="surface-card mt-5 p-5">
-        <h3 className="text-base font-semibold">Добавьте позиции в запрос</h3>
-        <p className="mt-2 text-sm leading-6 muted-text">
-          После выбора товаров здесь появится форма для отправки коммерческого
-          предложения.
-        </p>
       </div>
     )
   }
@@ -126,7 +115,7 @@ export default function RfqForm({ mode = "cart" }: RfqFormProps) {
       <div className="mb-4">
         <h3 className="text-base font-semibold">Контактные данные</h3>
         <p className="mt-1 text-sm muted-text">
-          {isCartMode
+          {isCartMode && hasItems
             ? "Отправим запрос вместе с выбранными позициями."
             : "Опишите задачу, позицию или расходные материалы, которые нужно подобрать."}
         </p>
@@ -181,7 +170,7 @@ export default function RfqForm({ mode = "cart" }: RfqFormProps) {
           <Textarea
             {...register("comment")}
             placeholder={
-              isCartMode
+              isCartMode && hasItems
                 ? "Комментарий к запросу"
                 : "Что нужно подобрать или уточнить"
             }
@@ -202,7 +191,7 @@ export default function RfqForm({ mode = "cart" }: RfqFormProps) {
         >
           {isSubmitting
             ? "Отправка..."
-            : isCartMode
+            : isCartMode && hasItems
               ? "Запросить КП"
               : "Отправить запрос"}
         </Button>

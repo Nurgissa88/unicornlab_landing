@@ -20,11 +20,11 @@ export default function ProductImage({
 }: ProductImageProps) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[inherit] bg-[linear-gradient(135deg,#f8fbff_0%,#eef4fb_55%,#f6f8fb_100%)] ${aspectClassName} ${className}`.trim()}
+      className={`relative overflow-hidden rounded-[inherit] bg-white ${aspectClassName} ${className}`.trim()}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(42,145,217,0.10),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(62,84,103,0.10),transparent_26%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(6,12,26,0.07),transparent_30%)]" />
 
-      <div className="absolute inset-4 rounded-[8px] bg-white/96 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.75)]" />
+      <div className="absolute inset-4 rounded-[8px] bg-white shadow-[inset_0_0_0_1px_rgba(6,12,26,0.08)]" />
 
       <Image
         src={product.image}
@@ -36,7 +36,7 @@ export default function ProductImage({
       />
 
       {showCategoryBadge ? (
-        <div className="absolute bottom-4 left-4 rounded-[10px] border border-white/85 bg-white/88 px-3 py-1 text-xs font-semibold text-[var(--primary)] shadow-sm backdrop-blur-sm">
+        <div className="absolute bottom-4 left-4 rounded-[10px] border border-[#060C1A]/15 bg-white px-3 py-1 text-xs font-semibold text-[#060C1A] shadow-sm">
           {getCategoryTitle(product.category)}
         </div>
       ) : null}

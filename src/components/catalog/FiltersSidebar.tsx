@@ -31,14 +31,14 @@ function FilterCheckbox({
   onChange: (checked: boolean) => void
 }) {
   return (
-    <label className="group flex cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-md)] border border-transparent px-3 py-2 transition hover:border-[var(--border)] hover:bg-[var(--surface-soft)]">
+    <label className="group flex cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-md)] border border-transparent px-3 py-2 transition hover:border-white/30 hover:bg-white/10">
       <span className="text-sm text-[var(--foreground)]">{label}</span>
 
       <span
         className={`flex h-5 w-5 items-center justify-center rounded-md border text-xs font-bold transition ${
           checked
-            ? "border-[var(--primary)] bg-[var(--primary)] text-white"
-            : "border-[var(--border)] bg-white text-transparent"
+            ? "border-white bg-white text-[#060C1A]"
+            : "border-white/45 bg-transparent text-transparent"
         }`}
       >
         ✓
@@ -71,7 +71,7 @@ export default function FiltersSidebar({
   onReset,
 }: FiltersSidebarProps) {
   return (
-    <aside className="surface-card h-fit p-6">
+    <aside className="catalog-filters surface-card h-fit p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.08em] muted-text">

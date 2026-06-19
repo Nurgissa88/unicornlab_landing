@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google"
 import { ViewTransitions } from "next-view-transitions"
 
 import "@/app/globals.css"
+import TypographyGuard from "@/components/layout/TypographyGuard"
 import CartDrawer from "@/components/rfq/CartDrawer"
 import { siteConfig } from "@/content/site"
 
@@ -25,6 +26,7 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="ru" data-scroll-behavior="smooth">
         <body className={`${manrope.variable} min-h-screen`}>
+          <TypographyGuard />
           {children}
           <CartDrawer />
         </body>

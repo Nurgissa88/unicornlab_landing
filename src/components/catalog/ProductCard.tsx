@@ -61,7 +61,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.article
       data-product-card
-      className="surface-card flex h-full flex-col p-5"
+      className="catalog-card surface-card flex h-full flex-col p-5"
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
     >
@@ -122,7 +122,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : null}
         </div>
 
-        <div className="mt-5 flex items-stretch gap-2">
+        <div className="mt-auto flex items-stretch gap-2 pt-5">
           <AddToQuoteButton product={product} className="flex-1" />
 
           <Link

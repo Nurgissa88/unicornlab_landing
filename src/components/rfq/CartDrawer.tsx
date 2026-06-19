@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
+import { X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
 import CartItem from "@/components/rfq/CartItem"
 import RfqForm from "@/components/rfq/RfqForm"
-import Button from "@/components/ui/Button"
 import { useCartStore } from "@/lib/cartStore"
 
 export default function CartDrawer() {
@@ -17,7 +17,9 @@ export default function CartDrawer() {
   const clearCart = useCartStore((state) => state.clearCart)
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -40,100 +42,84 @@ export default function CartDrawer() {
     <AnimatePresence>
       {isOpen ? (
         <>
-          <motion.div
-            className="fixed inset-0 z-40 bg-slate-950/18 backdrop-blur-[3px]"
+          <motion.button
+            type="button"
+            className="fixed inset-0 z-[90] cursor-default bg-[#060C1A]/22 backdrop-blur-[3px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+            transition={{ duration: 0.24, ease: "easeOut" }}
             onClick={closeCart}
+            aria-label="Закрыть форму"
           />
 
           <motion.aside
-            className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-xl flex-col border-l"
-            style={{
-              background: "rgba(255,255,255,0.96)",
-              borderColor: "var(--border)",
-              boxShadow: "var(--shadow-drawer)",
-              backdropFilter: "blur(14px)",
-            }}
-            initial={{ x: "100%", opacity: 0.92 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0.96 }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed right-0 top-0 z-[100] flex h-dvh w-full max-w-[760px] flex-col border-l border-[#3E5467]/20 bg-[#EAEAEA] text-[#020202] shadow-[-28px_0_90px_rgba(2,2,2,0.14)]"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Форма запроса коммерческого предложения"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.56, ease: [0.76, 0, 0.24, 1] }}
           >
-            <motion.div
-              className="flex items-start justify-between gap-4 border-b px-6 py-5"
-              style={{ borderColor: "var(--border)" }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.28, delay: 0.06, ease: "easeOut" }}
-            >
+            <div className="flex items-start justify-between gap-6 border-b border-[#3E5467]/20 px-6 py-6 md:px-9">
               <div>
-                <p className="text-sm font-medium muted-text">
+                <p className="text-xs uppercase tracking-[0.16em] text-[#3E5467]">
                   RFQ / Коммерческое предложение
                 </p>
-                <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em]">
+                <h2 className="mt-2 text-[clamp(2.5rem,4vw,4.5rem)] leading-[0.94]">
                   Запрос КП
                 </h2>
-                <p className="mt-2 text-sm muted-text">
-                  Выбрано позиций: {totalItems}
+                <p className="mt-3 text-sm text-[#3E5467]">
+                  {items.length > 0
+                    ? `Выбрано единиц: ${totalItems}`
+                    : "Опишите задачу или нужную позицию"}
                 </p>
               </div>
 
-              <Button
-                variant="secondary"
+              <button
+                type="button"
                 onClick={closeCart}
-                className="min-h-10 px-4"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[8px] bg-[#020202]/8 text-[#020202] transition hover:bg-[#020202]/14"
+                aria-label="Закрыть форму"
+                title="Закрыть"
               >
-                Закрыть
-              </Button>
-            </motion.div>
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-5">
-              {items.length === 0 ? (
-                <motion.div
-                  className="surface-card px-5 py-6"
+            <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6 md:px-9">
+              {items.length > 0 ? (
+                <motion.section
+                  className="mb-7 border-b border-[#3E5467]/20 pb-7"
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.28, ease: "easeOut" }}
+                  transition={{ duration: 0.3, delay: 0.08 }}
+                  aria-label="Выбранные позиции"
                 >
-                  <h3 className="text-lg font-semibold">Корзина пуста</h3>
-                  <p className="mt-2 text-sm muted-text">
-                    Добавьте товары из каталога, и они появятся здесь.
-                  </p>
-                </motion.div>
-              ) : (
-                <>
-                  <motion.div
-                    className="mb-4 flex items-center justify-between gap-4"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.24, delay: 0.08, ease: "easeOut" }}
-                  >
-                    <p className="text-sm muted-text">
-                      Добавленные товары можно отредактировать перед отправкой.
-                    </p>
-
+                  <div className="mb-4 flex items-center justify-between gap-5">
+                    <h3 className="text-lg font-semibold">
+                      Выбранные позиции
+                    </h3>
                     <button
                       type="button"
                       onClick={clearCart}
-                      className="text-sm font-medium text-[var(--primary)] transition hover:opacity-80"
+                      className="text-sm font-semibold text-[#2A91D9] transition hover:text-[#060C1A]"
                     >
-                      Очистить всё
+                      Очистить все
                     </button>
-                  </motion.div>
+                  </div>
 
-                  <div className="space-y-4">
+                  <div className="grid gap-3">
                     {items.map((item, index) => (
                       <motion.div
                         key={item.productId}
-                        initial={{ opacity: 0, y: 14 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          duration: 0.28,
-                          delay: 0.08 + index * 0.04,
-                          ease: "easeOut",
+                          duration: 0.25,
+                          delay: 0.1 + index * 0.035,
                         }}
                       >
                         <CartItem
@@ -145,15 +131,14 @@ export default function CartDrawer() {
                       </motion.div>
                     ))}
                   </div>
-                </>
-              )}
+                </motion.section>
+              ) : null}
 
               <motion.div
-                className="mt-6 border-t pt-6"
-                style={{ borderColor: "var(--border)" }}
-                initial={{ opacity: 0, y: 12 }}
+                className="rounded-[8px] border border-[#3E5467]/25 bg-[#EAEAEA] p-5 md:p-7"
+                initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, delay: 0.12, ease: "easeOut" }}
+                transition={{ duration: 0.34, delay: 0.1 }}
               >
                 <RfqForm />
               </motion.div>

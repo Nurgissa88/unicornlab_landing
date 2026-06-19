@@ -43,9 +43,9 @@ export default async function ProductDetailsPage({
     <>
       <Header />
 
-      <main>
+      <main className="catalog-page">
         <ProductDetailsReveal>
-          <Section>
+          <Section containerClassName="catalog-container !max-w-none">
             <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
               <div data-pd-visual className="surface-card p-6 md:p-8">
                 <ProductImage
@@ -114,7 +114,10 @@ export default async function ProductDetailsPage({
             </div>
           </Section>
 
-          <Section className="pt-0">
+          <Section
+            className="pt-0"
+            containerClassName="catalog-container !max-w-none"
+          >
             <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
               <div
                 data-pd-specs

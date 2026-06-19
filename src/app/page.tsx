@@ -4,19 +4,22 @@ import { useRef, useState } from "react"
 import gsap from "gsap"
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin"
 import { MorphSVGPlugin } from "gsap/MorphSVGPlugin"
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
 import Image from "next/image"
 import { Link } from "next-view-transitions"
 
 import RfqForm from "@/components/rfq/RfqForm"
+import Header from "@/components/layout/Header"
 import { siteConfig } from "@/content/site"
 
 gsap.registerPlugin(
   useGSAP,
   ScrollTrigger,
   MorphSVGPlugin,
-  DrawSVGPlugin
+  DrawSVGPlugin,
+  ScrambleTextPlugin
 )
 
 export default function HomePage() {
@@ -28,6 +31,7 @@ export default function HomePage() {
   const isRfqClosingRef = useRef(false)
   const scrollBlockAbortRef = useRef<AbortController | null>(null)
   const strips = Array.from({ length: 5 })
+  const introTagline = "Всё для вашей лаборатории"
   const logoSymbolPaths = [
     "M107.764 88.0309C105.087 127.551 72.1721 142.173 35.4902 134.467L36.6799 128.243C61.8615 132.096 96.8581 121.228 99.634 87.6357L107.764 88.0309Z",
     "M84.071 109.174C54.3289 135.258 20.4229 122.414 0 91.0939L5.1553 87.5371C20.2246 108.088 52.7427 124.982 78.5191 103.246L84.071 109.174Z",
@@ -185,6 +189,13 @@ export default function HomePage() {
 
       void document.fonts.ready.then(fitTitleToScreen)
       fitTitleToScreen()
+
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual"
+      }
+
+      window.scrollTo(0, 0)
+
       const setHeroCursorActive = (isActive: boolean) => {
         isHeroCursorActiveRef.current = isActive
 
@@ -207,6 +218,49 @@ export default function HomePage() {
       }
 
       window.addEventListener("mousemove", handleMouseMove)
+      const magneticCleanups: Array<() => void> = []
+      const catalogLinks = gsap.utils.toArray<HTMLElement>(".catalog-link")
+
+      catalogLinks.forEach((link) => {
+        const arrow = link.querySelector<HTMLElement>(".catalog-link-arrow")
+        const moveX = gsap.quickTo(link, "x", {
+          duration: 0.28,
+          ease: "power3.out",
+        })
+        const moveY = gsap.quickTo(link, "y", {
+          duration: 0.28,
+          ease: "power3.out",
+        })
+        const arrowX = arrow
+          ? gsap.quickTo(arrow, "x", {
+              duration: 0.22,
+              ease: "power3.out",
+            })
+          : null
+
+        const handleLinkMove = (event: MouseEvent) => {
+          const rect = link.getBoundingClientRect()
+          const x = event.clientX - rect.left - rect.width / 2
+          const y = event.clientY - rect.top - rect.height / 2
+
+          moveX(gsap.utils.clamp(-16, 16, x * 0.055))
+          moveY(gsap.utils.clamp(-10, 10, y * 0.055))
+          arrowX?.(gsap.utils.clamp(-8, 14, x * 0.045))
+        }
+
+        const handleLinkLeave = () => {
+          moveX(0)
+          moveY(0)
+          arrowX?.(0)
+        }
+
+        link.addEventListener("mousemove", handleLinkMove)
+        link.addEventListener("mouseleave", handleLinkLeave)
+        magneticCleanups.push(() => {
+          link.removeEventListener("mousemove", handleLinkMove)
+          link.removeEventListener("mouseleave", handleLinkLeave)
+        })
+      })
       gsap.set(".hero-copy", { autoAlpha: 1 })
       gsap.set(".hero-copy-line", { yPercent: 110 })
       gsap.set(".section-kicker", { autoAlpha: 0, y: -12 })
@@ -252,6 +306,15 @@ export default function HomePage() {
       gsap.set(".contacts-title-line", { yPercent: 110 })
       gsap.set(".contacts-copy", { autoAlpha: 0, y: 24 })
       gsap.set(".contacts-item", { autoAlpha: 0, y: 24 })
+      gsap.set(".scroll-progress-fill", {
+        scaleX: 0,
+        transformOrigin: "0% 50%",
+      })
+      gsap.utils
+        .toArray<HTMLElement>(".scramble-label")
+        .forEach((label) => {
+          label.textContent = ""
+        })
       gsap.set(".inseek-symbol-fill", {
         opacity: 0,
         scale: 0.985,
@@ -261,6 +324,11 @@ export default function HomePage() {
         drawSVG: "50% 50%",
         opacity: 0,
         transformOrigin: "70px 70px",
+      })
+      gsap.set(".inseek-tagline-char", {
+        autoAlpha: 0,
+        y: 14,
+        filter: "blur(6px)",
       })
 
       const introTimeline = gsap.timeline({
@@ -328,6 +396,21 @@ export default function HomePage() {
           },
           "-=0.36"
         )
+        .to(".inseek-tagline-char", {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.38,
+          ease: "power2.out",
+          stagger: 0.035,
+        })
+
+      gsap.to(".page-boot-screen", {
+        autoAlpha: 0,
+        duration: 0.32,
+        ease: "power2.out",
+        delay: 0.08,
+      })
 
       const scrollTimeline = gsap.timeline({
         scrollTrigger: {
@@ -340,6 +423,13 @@ export default function HomePage() {
       })
 
       scrollTimeline
+        .addLabel("navHome")
+        .to(".inseek-tagline", {
+          y: -48,
+          autoAlpha: 0,
+          duration: 0.42,
+          ease: "power2.in",
+        })
         .addLabel("logoExit")
         .to(
           ".inseek-symbol, .inseek-symbol-draw-layer",
@@ -396,6 +486,19 @@ export default function HomePage() {
           "<"
         )
         .to(
+          ".section-label-text",
+          {
+            scrambleText: {
+              text: "Главная",
+              chars: "upperCase",
+              speed: 0.45,
+            },
+            duration: 0.28,
+            ease: "none",
+          },
+          "<0.06"
+        )
+        .to(
           ".talk-cursor",
           {
             autoAlpha: 1,
@@ -423,6 +526,7 @@ export default function HomePage() {
           stagger: 0.045,
           duration: 0.82,
         })
+        .addLabel("navWork")
         .to(
           ".work-kicker",
           {
@@ -432,6 +536,19 @@ export default function HomePage() {
             ease: "power2.out",
           },
           ">-0.08"
+        )
+        .to(
+          ".work-label-text",
+          {
+            scrambleText: {
+              text: "Что мы делаем?",
+              chars: "upperCase",
+              speed: 0.45,
+            },
+            duration: 0.28,
+            ease: "none",
+          },
+          "<0.06"
         )
         .to(
           ".work-title-line",
@@ -544,6 +661,7 @@ export default function HomePage() {
           duration: 1.16,
           ease: "power2.inOut",
         })
+        .addLabel("navProcess")
         .to(
           ".process-kicker",
           {
@@ -553,6 +671,19 @@ export default function HomePage() {
             ease: "power2.out",
           },
           ">-0.1"
+        )
+        .to(
+          ".process-label-text",
+          {
+            scrambleText: {
+              text: "Как мы делаем",
+              chars: "upperCase",
+              speed: 0.45,
+            },
+            duration: 0.28,
+            ease: "none",
+          },
+          "<0.06"
         )
         .to(
           ".process-title-line",
@@ -639,6 +770,7 @@ export default function HomePage() {
           duration: 0.78,
           ease: "power3.inOut",
         })
+        .addLabel("navCatalog")
         .to(
           ".catalog-kicker",
           {
@@ -648,6 +780,19 @@ export default function HomePage() {
             ease: "power2.out",
           },
           ">-0.1"
+        )
+        .to(
+          ".catalog-label-text",
+          {
+            scrambleText: {
+              text: "Каталог решений",
+              chars: "upperCase",
+              speed: 0.45,
+            },
+            duration: 0.28,
+            ease: "none",
+          },
+          "<0.06"
         )
         .to(
           ".catalog-title-line",
@@ -716,6 +861,7 @@ export default function HomePage() {
           duration: 0.94,
           ease: "power3.inOut",
         })
+        .addLabel("navContacts")
         .to(
           ".contacts-kicker",
           {
@@ -725,6 +871,19 @@ export default function HomePage() {
             ease: "power2.out",
           },
           ">-0.1"
+        )
+        .to(
+          ".contacts-label-text",
+          {
+            scrambleText: {
+              text: "Контакты",
+              chars: "upperCase",
+              speed: 0.45,
+            },
+            duration: 0.28,
+            ease: "none",
+          },
+          "<0.06"
         )
         .to(
           ".contacts-title-line",
@@ -769,14 +928,75 @@ export default function HomePage() {
           "<"
         )
 
+      const sectionLabels: Record<string, string> = {
+        home: "navHome",
+        work: "navWork",
+        process: "navProcess",
+        catalog: "navCatalog",
+        contacts: "navContacts",
+      }
+
+      const scrollToSection = (section: string) => {
+        const labelName = sectionLabels[section]
+        const scrollTrigger = scrollTimeline.scrollTrigger
+
+        if (!labelName || !scrollTrigger) {
+          return
+        }
+
+        const labelTime = scrollTimeline.labels[labelName]
+        const settledOffset = section === "home" ? 0 : 0.72
+        const progress =
+          (labelTime + settledOffset) / scrollTimeline.duration()
+        const target =
+          scrollTrigger.start +
+          (scrollTrigger.end - scrollTrigger.start) * progress
+
+        window.scrollTo({
+          top: target,
+          behavior: "smooth",
+        })
+      }
+
+      const handleSectionNavigation = (event: Event) => {
+        const section = (event as CustomEvent<{ section?: string }>).detail
+          ?.section
+
+        if (section) {
+          scrollToSection(section)
+        }
+      }
+
+      window.addEventListener("inseek:navigate-section", handleSectionNavigation)
+      scrollTimeline.eventCallback("onUpdate", () => {
+        gsap.set(".scroll-progress-fill", {
+          scaleX: scrollTimeline.progress(),
+        })
+      })
+
+      const initialHash = window.location.hash.replace("#", "")
+
+      if (initialHash) {
+        requestAnimationFrame(() => scrollToSection(initialHash))
+      }
+
       window.addEventListener("resize", fitTitleToScreen)
 
       return () => {
         window.removeEventListener("resize", fitTitleToScreen)
+        window.removeEventListener(
+          "inseek:navigate-section",
+          handleSectionNavigation
+        )
+        magneticCleanups.forEach((cleanup) => cleanup())
+        scrollTimeline.eventCallback("onUpdate", null)
         scrollTimeline.scrollTrigger?.kill()
         scrollTimeline.kill()
         introTimeline.kill()
         window.removeEventListener("mousemove", handleMouseMove)
+        if ("scrollRestoration" in window.history) {
+          window.history.scrollRestoration = "auto"
+        }
         setHeroCursorActive(false)
       }
     },
@@ -938,10 +1158,23 @@ export default function HomePage() {
   )
 
   return (
-    <main
-      ref={pageRef}
-      className="relative min-h-[1050vh] w-full bg-[#EAEAEA]"
-    >
+    <>
+      <Header />
+      <main
+        ref={pageRef}
+        className="relative min-h-[1050vh] w-full bg-[#EAEAEA]"
+      >
+        <div
+          className="page-boot-screen fixed inset-0 z-[120] bg-[#EAEAEA]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none fixed left-0 right-0 top-0 z-[90] h-[5px] bg-transparent"
+          aria-hidden="true"
+        >
+          <div className="scroll-progress-fill h-full w-full bg-[#020202]" />
+        </div>
+
       <div
         ref={curtainRef}
         className="sticky top-0 h-screen w-full overflow-hidden"
@@ -969,7 +1202,7 @@ export default function HomePage() {
             <div className="h-px w-full bg-white/35" />
             <div className="mt-5 flex items-center gap-3 text-sm uppercase leading-none tracking-[0.02em]">
               <span className="h-2 w-2 rounded-full bg-white" />
-              <span>Главная</span>
+              <span className="scramble-label section-label-text">Главная</span>
             </div>
           </div>
 
@@ -1018,7 +1251,9 @@ export default function HomePage() {
           <div className="h-px w-full bg-[#020202]/20" />
           <div className="mt-5 flex items-center gap-3 text-sm uppercase leading-none tracking-[0.02em]">
             <span className="h-2 w-2 rounded-full bg-[#020202]" />
-            <span>Что мы делаем?</span>
+            <span className="scramble-label work-label-text">
+              Что мы делаем?
+            </span>
           </div>
         </div>
 
@@ -1095,7 +1330,7 @@ export default function HomePage() {
 
         <div
           ref={titleRef}
-          className="absolute inset-0 z-10 mx-auto flex w-max origin-center items-center justify-center overflow-visible"
+          className="absolute inset-0 z-10 mx-auto flex w-max origin-center flex-col items-center justify-center overflow-visible"
           aria-label="InSeek"
         >
           <span
@@ -1146,6 +1381,20 @@ export default function HomePage() {
               </g>
             </svg>
           </span>
+          <p
+            className="inseek-tagline relative z-20 -mt-[clamp(1.5rem,3vw,3.75rem)] self-stretch whitespace-pre pl-[31.8%] text-left text-[clamp(1.75rem,3.6vw,4.25rem)] leading-none tracking-[0.04em] text-white will-change-transform"
+            aria-label={introTagline}
+          >
+            {Array.from(introTagline).map((character, index) => (
+              <span
+                key={`${character}-${index}`}
+                className="inseek-tagline-char inline-block will-change-transform"
+                aria-hidden="true"
+              >
+                {character === " " ? "\u00A0" : character}
+              </span>
+            ))}
+          </p>
         </div>
 
         <section className="process-screen absolute inset-0 z-[13] bg-[#EAEAEA] px-6 py-8 text-[#060C1A] will-change-transform md:px-12 lg:px-16">
@@ -1153,12 +1402,14 @@ export default function HomePage() {
             <div className="h-px w-full bg-[#020202]/20" />
             <div className="mt-5 flex items-center gap-3 text-sm uppercase leading-none tracking-[0.02em] text-[#020202]">
               <span className="h-2 w-2 rounded-full bg-[#020202]" />
-              <span>Как мы делаем</span>
+              <span className="scramble-label process-label-text">
+                Как мы делаем
+              </span>
             </div>
           </div>
 
           <div className="mt-[8vh] grid gap-10 lg:grid-cols-[0.82fr_1fr] lg:items-start">
-            <div className="catalog-copy-block will-change-transform">
+            <div>
               <h2
                 className="text-[clamp(4.5rem,9vw,11rem)] leading-[0.9] text-[#020202]"
                 aria-label="Полный цикл"
@@ -1212,7 +1463,9 @@ export default function HomePage() {
             <div className="h-px w-full bg-[#020202]/20" />
             <div className="mt-5 flex items-center gap-3 text-sm uppercase leading-none tracking-[0.02em] text-[#020202]">
               <span className="h-2 w-2 rounded-full bg-[#020202]" />
-              <span>Каталог решений</span>
+              <span className="scramble-label catalog-label-text">
+                Каталог решений
+              </span>
             </div>
           </div>
 
@@ -1250,7 +1503,9 @@ export default function HomePage() {
                       {category.description}
                     </span>
                   </span>
-                  <span className="shrink-0 text-4xl leading-none">→</span>
+                  <span className="catalog-link-arrow shrink-0 text-4xl leading-none will-change-transform">
+                    →
+                  </span>
                 </Link>
               ))}
             </div>
@@ -1269,7 +1524,9 @@ export default function HomePage() {
               <div className="h-px w-full bg-white/35" />
               <div className="mt-5 flex items-center gap-3 text-sm uppercase leading-none tracking-[0.02em] text-white">
                 <span className="h-2 w-2 rounded-full bg-white" />
-                <span>Контакты</span>
+                <span className="scramble-label contacts-label-text">
+                  Контакты
+                </span>
               </div>
             </div>
 
@@ -1412,7 +1669,8 @@ export default function HomePage() {
           </div>
         </div>
       ) : null}
-    </main>
+      </main>
+    </>
   )
 }
 

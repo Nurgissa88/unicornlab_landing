@@ -36,7 +36,7 @@ export default async function CategoryPage({
   return (
     <>
       <Header />
-      <main>
+      <main className="catalog-page">
         <CatalogPage
           currentCategory={currentCategory}
           products={categoryProducts}

@@ -133,8 +133,8 @@ export default function CatalogPage({
   return (
     <>
       <section className="section-shell">
-        <div className="app-container">
-          <div className="section-panel px-8 py-10 md:px-10 md:py-12">
+        <div className="catalog-container">
+          <div className="catalog-intro section-panel px-8 py-10 md:px-10 md:py-12">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <Link
@@ -245,7 +245,7 @@ export default function CatalogPage({
       </section>
 
       <section className="section-shell pt-0">
-        <div className="app-container">
+        <div className="catalog-container">
           <div className="mb-8 flex flex-wrap gap-3">
             {categories.map((item) => {
               const isActive = item.slug === currentCategory.slug
@@ -255,7 +255,9 @@ export default function CatalogPage({
                   key={item.slug}
                   href={`/catalog/${item.slug}`}
                   className={`ui-button ${
-                    isActive ? "ui-button-primary" : "ui-button-secondary"
+                    isActive
+                      ? "ui-button-primary !text-white"
+                      : "ui-button-secondary"
                   }`}
                 >
                   {item.title}
